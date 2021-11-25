@@ -2,6 +2,7 @@
 #include <windows.h>
 #include "tp_stub.h"
 #include <string>
+#include <cinttypes>
 //---------------------------------------------------------------------------
 
 // 実行ファイルがある場所に WHND を保存する
@@ -16,7 +17,7 @@ storeHWND(HWND hwnd)
 	if (stream != NULL) {
 		char buf[100];
 		DWORD len;
-		_snprintf(buf, sizeof buf, "%d", (int)hwnd);
+		_snprintf(buf, sizeof buf, "%PRId64", (tjs_intptr_t)hwnd);
 		stream->Write(buf, strlen(buf), &len);
 		stream->Release();
 	}
@@ -73,8 +74,8 @@ class tWMRStartFunction : public tTJSDispatch
 		tTJSVariant mode, proc, userdata;
 		tTJSVariant *p[3] = {&mode, &proc, &userdata};
 		mode = (tTVInteger)(tjs_int)wrmRegister;
-		proc = (tTVInteger)reinterpret_cast<tjs_int>(MyReceiver);
-		userdata = (tTVInteger)(tjs_int)obj;
+		proc = (tTVInteger)reinterpret_cast<tjs_intptr_t>(MyReceiver);
+		userdata = (tTVInteger)(tjs_intptr_t)obj;
 		obj->FuncCall(0, TJS_W("registerMessageReceiver"), NULL,
 					  NULL, 3, p, obj);
 
@@ -108,7 +109,7 @@ class tWMRStopFunction : public tTJSDispatch
 		tTJSVariant mode, proc, userdata;
 		tTJSVariant *p[3] = {&mode, &proc, &userdata};
 		mode = (tTVInteger)(tjs_int)wrmUnregister;
-		proc = (tTVInteger)reinterpret_cast<tjs_int>(MyReceiver);
+		proc = (tTVInteger)reinterpret_cast<tjs_intptr_t>(MyReceiver);
 		userdata = (tTVInteger)(tjs_int)0;
 		obj->FuncCall(0, TJS_W("registerMessageReceiver"), NULL,
 			NULL, 3, p, obj);
