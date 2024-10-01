@@ -17,7 +17,7 @@ storeHWND(HWND hwnd)
 	if (stream != NULL) {
 		char buf[100];
 		DWORD len;
-		_snprintf(buf, sizeof buf, "%PRId64", (tjs_intptr_t)hwnd);
+		_snprintf(buf, sizeof buf, "%" PRId64, (tjs_intptr_t)hwnd);
 		stream->Write(buf, strlen(buf), &len);
 		stream->Release();
 	}
