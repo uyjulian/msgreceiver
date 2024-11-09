@@ -16,7 +16,7 @@ storeHWND(HWND hwnd)
 	if (stream != NULL) {
 		char buf[100];
 		DWORD len;
-		_snprintf(buf, sizeof buf, "%d", (int)hwnd);
+		_snprintf(buf, sizeof buf, "%lld", (long long)hwnd);
 		stream->Write(buf, strlen(buf), &len);
 		stream->Release();
 	}
@@ -73,15 +73,15 @@ class tWMRStartFunction : public tTJSDispatch
 		tTJSVariant mode, proc, userdata;
 		tTJSVariant *p[3] = {&mode, &proc, &userdata};
 		mode = (tTVInteger)(tjs_int)wrmRegister;
-		proc = (tTVInteger)reinterpret_cast<tjs_int>(MyReceiver);
-		userdata = (tTVInteger)(tjs_int)obj;
+		proc = (tTVInteger)reinterpret_cast<tjs_intptr_t>(MyReceiver);
+		userdata = (tTVInteger)(tjs_intptr_t)obj;
 		obj->FuncCall(0, TJS_W("registerMessageReceiver"), NULL,
 					  NULL, 3, p, obj);
 
 		// ウィンドウハンドルを取得して記録
 		tTJSVariant val;
 		obj->PropGet(0, TJS_W("HWND"), NULL, &val, obj);
-		storeHWND(reinterpret_cast<HWND>((tjs_int)(val)));
+		storeHWND(reinterpret_cast<HWND>((tjs_intptr_t)(val)));
 		
 		return TJS_S_OK;
 	}
@@ -108,8 +108,8 @@ class tWMRStopFunction : public tTJSDispatch
 		tTJSVariant mode, proc, userdata;
 		tTJSVariant *p[3] = {&mode, &proc, &userdata};
 		mode = (tTVInteger)(tjs_int)wrmUnregister;
-		proc = (tTVInteger)reinterpret_cast<tjs_int>(MyReceiver);
-		userdata = (tTVInteger)(tjs_int)0;
+		proc = (tTVInteger)reinterpret_cast<tjs_intptr_t>(MyReceiver);
+		userdata = (tTVInteger)(tjs_intptr_t)0;
 		obj->FuncCall(0, TJS_W("registerMessageReceiver"), NULL,
 			NULL, 3, p, obj);
 
