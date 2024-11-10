@@ -82,7 +82,7 @@ class tWMRStartFunction : public tTJSDispatch
 		// ウィンドウハンドルを取得して記録
 		tTJSVariant val;
 		obj->PropGet(0, TJS_W("HWND"), NULL, &val, obj);
-		storeHWND(reinterpret_cast<HWND>((tjs_int)(val)));
+		storeHWND(reinterpret_cast<HWND>((tjs_intptr_t)(val)));
 		
 		return TJS_S_OK;
 	}
@@ -110,7 +110,7 @@ class tWMRStopFunction : public tTJSDispatch
 		tTJSVariant *p[3] = {&mode, &proc, &userdata};
 		mode = (tTVInteger)(tjs_int)wrmUnregister;
 		proc = (tTVInteger)reinterpret_cast<tjs_intptr_t>(MyReceiver);
-		userdata = (tTVInteger)(tjs_int)0;
+		userdata = (tTVInteger)(tjs_intptr_t)0;
 		obj->FuncCall(0, TJS_W("registerMessageReceiver"), NULL,
 			NULL, 3, p, obj);
 
